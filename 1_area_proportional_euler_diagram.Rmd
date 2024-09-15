@@ -1,0 +1,24 @@
+```{r}
+library(eulerr)
+
+#eulerr generates area-proportional euler diagrams that display set relationships (intersections, unions, and disjoints) with #circles or ellipses
+
+fit1 <- euler(c("DeepVirFinder" = 186, "VirSorter2" = 129, "ViraLM" = 588, "geNomad" = 118, 
+               "DeepVirFinder&VirSorter2" = 24, "DeepVirFinder&ViraLM" = 604, "DeepVirFinder&geNomad" = 53, "VirSorter2&ViraLM" = 233,
+               "VirSorter2&geNomad" = 253, "ViraLM&geNomad" = 1273, "DeepVirFinder&VirSorter2&ViraLM" = 273, "DeepVirFinder&VirSorter2&geNomad" = 80,
+               "DeepVirFinder&ViraLM&geNomad" = 3786, "VirSorter2&ViraLM&geNomad" = 4879, "DeepVirFinder&VirSorter2&ViraLM&geNomad"=13543),
+             shape = "circle")
+
+col <- c("#66D2D6", "#FBC740", "#E56997","cornflowerblue")
+
+f2= plot(fit1,
+     quantities = TRUE,
+     fills = list(fill = col, alpha = 0.8),
+     edges = "black",
+     legend = list(side = "right", nrow = 4, ncol = 1))
+
+f2
+
+ggsave(f2,filename = "eulerr.pdf",width = 15, height = 10, units = "cm", useDingbats=FALSE)
+```
+
