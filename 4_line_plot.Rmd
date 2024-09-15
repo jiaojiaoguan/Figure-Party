@@ -1,0 +1,50 @@
+```{r plot loss and F1}
+# Libraries
+library(ggplot2)
+library(dplyr)
+library(patchwork) # To display 2 charts together
+library(hrbrthemes)
+
+library(readxl)
+library(reshape)
+library(ggpubr)
+
+
+data <- read_excel("Effect_of_pretrain.xlsx")
+
+
+if(!require('cowplot')) {
+  install.packages('cowplot')
+  library('cowplot')
+}
+df <- data.frame(Epoch=data$Epoch,random_init=data$loss_random_initialize,pre_train=data$loss_pretrain)
+
+df <- melt(df, id.vars = "Epoch")
+
+p1 <- ggplot(df, aes(x = Epoch, y = value, color = variable)) +
+geom_line(size=1)+theme(legend.position = "bottom",legend.text = element_text(size = 18,face = "bold"),
+        axis.title = element_text(size = 18),
+        axis.text = element_text(size = 18,face = "bold"),
+        axis.title.y = element_text(size = 18,face = "bold"),
+        axis.title.x = element_text(size = 18,face = "bold"))+ylab("Loss")
+
+df1 <- data.frame(Epoch=data$Epoch,random_init=data$F1_random_initialize,pre_train=data$F1_pretrain)
+
+df1 <- melt(df1, id.vars = "Epoch")
+
+p2 <- ggplot(df1, aes(x = Epoch, y = value, color = variable)) +
+  geom_line(size=1)+ylab("F1-score")+ theme(legend.position = "bottom", legend.box = "horizontal", legend.margin = margin(t = 0, r = 0, b = -10, l = -20),legend.text = element_text(size = 18,face = "bold"),
+        axis.title = element_text(size = 18),
+        axis.text = element_text(size = 18,face = "bold"),
+        axis.title.y = element_text(size = 18,face = "bold"),
+        axis.title.x = element_text(size = 18,face = "bold"))
+
+combined_plot <- plot_grid(p1, p2, ncol = 2, align = "hv", rel_widths = c(1, 1))
+
+combined_plot
+
+
+ggsave(combined_plot,filename ="4_line_plot.pdf",width
+= 20, height = 10, units = "cm", useDingbats=FALSE)
+
+```
