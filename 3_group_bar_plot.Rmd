@@ -1,0 +1,40 @@
+```{r plot loss and F1 for pretrained and random}
+# Libraries
+library(ggplot2)
+library(dplyr)
+library(patchwork) # To display 2 charts together
+library(hrbrthemes)
+library(tidyverse)
+library(readxl)
+library(reshape)
+library(ggpubr)
+
+data <- read_excel("3_group_bar_plot.xlsx")
+df1 <- data.frame(Organisim=data$Organisim,With_Insecta=data$With_Insecta,Without_Insecta=data$Without_Insecta)
+
+# Define the desired order of the "length" variable
+Organisim_order <- c("500bp", "1kbp", "2kbp", "10kbp", "20kbp")
+category_order <- c("randon_init","pre_train")
+
+# Reshape the data into long format
+data_long <- data %>%
+  gather(category, value, -length)
+# Convert the "length" column to a factor with the desired order
+data_long$Organisim <- factor(data_long$length, levels = Organisim_order)
+# Convert the "category" column to a factor with the desired order
+data_long$category <- factor(data_long$category, levels = category_order)
+
+my_colors <- c("#87CEEB","#f89588")
+# my_colors <- c("mistyrose", "lightblue")
+# # Create the grouped barplot
+x=ggplot(data_long, aes(x = Organisim, y = value, fill = category))+
+geom_bar(stat = "identity", position = "dodge",width = 0.4) + xlab("") + ylab("F1-score") + ggtitle("")+scale_fill_manual(values = my_colors)+labs(fill = "")+coord_cartesian(ylim = c(0, 1))+theme(legend.position = "bottom",
+        legend.box = "horizontal",
+        legend.margin = margin(t = 0, r = 0, b = -5, l = -5),
+        legend.text = element_text(size = 18,face = "bold"),
+        axis.title = element_text(size = 18),
+        axis.text = element_text(size = 18,face = "bold"),
+        axis.title.y = element_text(size = 18,face = "bold"))
+
+x
+ggsave(x,filename = "3_group_bar_plot.pdf",width = 20, height = 10, units = "cm", useDingbats=FALSE)
